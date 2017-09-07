@@ -10,13 +10,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Hashtable;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.control.Menu;
@@ -26,8 +29,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriter;
 
 
 /**
@@ -37,16 +38,14 @@ import javax.imageio.ImageWriter;
 public class FirstHalfProject extends Application {
     
     // variable that containes the active image
-    Image image;
+    private Image image;
     
     @Override
     public void start(Stage primaryStage) {
-        //System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        //System.out.println("Somthing Highly Visable And Easy to See");
         
         // Container that allows the immage to be displayed
         // Container also has helpful methods
-        ImageView iv1 = new ImageView();        
+        ImageView imageView = new ImageView();        
         
         // Container that arranges the items contained in it in a grid for display on screen
         // grid is arranged as (column, row)        
@@ -70,9 +69,6 @@ public class FirstHalfProject extends Application {
         final FileChooser fileChooser = new FileChooser();
         
         // sets the file formates that the File Chooser will show in its window
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP(*.bmp)", "*.bmp"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF(*.gif)", "*.gif"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPEG(*.jpeg)", "*.jpeg"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));
         
         // this function is called when the open MenuItem is clicked on
@@ -86,16 +82,10 @@ public class FirstHalfProject extends Application {
                     image = new Image(new FileInputStream(file));                    
                     
                     // sets the Image that will be shown in the Viewer 
-                    iv1.setImage(image);
-                    
-                    /*
-                    These Lines appear to do nothing remove from Rososco's version
-                    //HBox box = new HBox();
-                    //box.getChildren().add(iv1);                    
-                    */
+                    imageView.setImage(image);
                     
                     // adds the image viewer to the grid directly bellow the menu bar
-                    root.add(iv1, 0, 1); // 
+                    root.add(imageView, 0, 1); // 
                     // resizes the window to match the size of the image
                     primaryStage.sizeToScene();                    
                     
@@ -106,33 +96,36 @@ public class FirstHalfProject extends Application {
         });
         // adds the open menu item to the File Menu
         menuFile.getItems().addAll(open);
-        
-        /*
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));
-        */
-        
+                
         // creates a new menu item Save to be placed in the file menu
         // when pressed this item saves the image currently in use 
         MenuItem save = new MenuItem("Save");
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                  try {
-                 File file = fileChooser.showSaveDialog(primaryStage);
-                 System.out.println(fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2));
+                 // launches the File Chooser to select a file to save to then stores that file in the file object
+                 File file = fileChooser.showSaveDialog(primaryStage);             
+                 System.out.println(file.getCanonicalFile());
                  
+                 //stores the selected file formate in the variable fileType
+                 //gets the first of the posible extentions
+                 // then removes the first two charachters (*.) to get the name of the file type
                  String fileType = new String(fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2));
-                 // 
+                 System.out.println(fileType);
+                 
+                 // if the file name does not contain the proper extention
+                 // then rename the file so that it does
+                 if  (!(file.getPath().contains("." + fileType))) {
+                     file.renameTo(new File(file.getPath() + "." + fileType));
+                 }
+                 
+                 
+                 // writes image to the selected file 
                  ImageIO.write(SwingFXUtils.fromFXImage(image, null), fileType, file);
                  
-                 /*
-                 Iterator<ImageReader> imageReaders = ImageIO.getImageReadersByFormatName(fileType);
-                 ImageWriter writer = ImageIO.getImageWriter(imageReaders.next());
-                 writer.write(image);
-                 */
                  
                 } catch (IOException e) {
-                    //System.out.println("IO Exception");
+                    
                 } 
             }
         });
@@ -145,14 +138,13 @@ public class FirstHalfProject extends Application {
         // --- Menu View
         Menu menuView = new Menu("View"); 
         
+        // adds the File Edit, and View objects to the menuBar container
         menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
         
-        //root.getChildren().addAll(menuBar);
+        // adds the menu bar to the top of the view 
         root.add(menuBar, 0, 0);
-        //root.setVgrow(menuBar, ALWAYS);
-        root.setVgap(0);
+        // Aligns the grid so that (0, 0) is in the top write
         root.setAlignment(Pos.TOP_RIGHT);
-        //root.setGridLinesVisible(true);
         
         
         primaryStage.setTitle("Image Viewer");
