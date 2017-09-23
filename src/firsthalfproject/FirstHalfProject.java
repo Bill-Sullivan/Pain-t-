@@ -58,8 +58,6 @@ public class FirstHalfProject extends Application {
         // grid is arranged as (column, row)        
         GridPane root = new GridPane();
         
-        StackPane stack = new StackPane();        
-        
         CanvasWrapper canvasWrapper = new CanvasWrapper();
         
         Scene scene = new Scene(root);              

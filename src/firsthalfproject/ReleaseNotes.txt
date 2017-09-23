@@ -1,6 +1,7 @@
 Version 0.2.0
 added ability to draw a line on an image in an arbitrary color
 added color picker to select color
+added ability to create a blank image
 
 Version 0.1.0
 Initial Release
