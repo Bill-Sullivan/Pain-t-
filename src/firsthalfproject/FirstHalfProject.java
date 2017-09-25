@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.control.Menu;
@@ -38,6 +39,12 @@ public class FirstHalfProject extends Application {
     // variable that containes the active image
     private Image image;
     
+    
+    static ComboBoxWrapper comboBoxWrapper = new ComboBoxWrapper();
+    static CanvasWrapper canvasWrapper = new CanvasWrapper();
+    static ColorPickerWrapper colorPickerWrapper = new ColorPickerWrapper();
+    static ToolBarWrapper toolBarWrapper = new ToolBarWrapper();
+    
     @Override
     public void start(Stage primaryStage) {        
         
@@ -45,7 +52,7 @@ public class FirstHalfProject extends Application {
         // grid is arranged as (column, row)        
         GridPane root = new GridPane();
         
-        CanvasWrapper canvasWrapper = new CanvasWrapper();
+        
         
         Scene scene = new Scene(root);              
         
@@ -207,10 +214,15 @@ public class FirstHalfProject extends Application {
         
         // adds the menu bar to the top of the view 
         root.add(menuBar, 0, 0);
-        // Aligns the grid so that (0, 0) is in the top write
+        
+        root.add(comboBoxWrapper.getComboBox(), 2, 0);
+        
+        root.add(toolBarWrapper.getToolBar(), 3, 0);
+        
+        // Aligns the grid so that (0, 0) is in the top right
         root.setAlignment(Pos.TOP_RIGHT);
         
-        root.add(canvasWrapper.getColorPicker(), 1, 0);
+        root.add(colorPickerWrapper.getColorPicker(), 1, 0);
         
         
         primaryStage.setTitle("Image Viewer");

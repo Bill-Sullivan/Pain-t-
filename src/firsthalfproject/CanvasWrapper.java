@@ -13,18 +13,15 @@ import static java.lang.Math.min;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 
-import firsthalfproject.PairOfValues;
 
 /**
  *
  * @author Bill
  */
 public class CanvasWrapper {
-    ColorPicker colorPicker = new ColorPicker();
         
     final Canvas canvas = new Canvas();
     GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -43,7 +40,7 @@ public class CanvasWrapper {
         
        canvas.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Circle" || curserMode == "Square") {
+                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Square") {
                     startDragClickX = event.getX();
                     startDragClickY = event.getY();
                 } 
@@ -66,58 +63,18 @@ public class CanvasWrapper {
     canvas.setOnMouseReleased(new EventHandler<MouseEvent>() {    
         public void handle(MouseEvent event) {
             if (curserMode == "Line") {
-                gc.setStroke(colorPicker.getValue());
+                updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
             } else if (curserMode == "Rectangle") {
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
             } else if (curserMode == "Square") {
                 drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
-                
-                
-                
-                
-            } else if (curserMode == "Circle") {
-                double radius = getDistance(startDragClickX, startDragClickY, event.getX(), event.getY());
-                
-                /*
-                double startPointX = startDragClickX - radius;
-                double startPointY = startDragClickY - radius;
-                
-               
-                System.out.println(startDragClickX);
-                System.out.println(startDragClickY);
-                System.out.println(event.getX());
-                System.out.println(event.getY());
-                System.out.println(radius);
-                System.out.println("");
-                
-                
-                gc.beginPath();
-                gc.moveTo(startPointX, startPointY); 
-                gc.setStroke(colorPicker.getValue());
-                gc.arcTo( event.getY(), event.getX(),  startDragClickY, startDragClickX, radius);
-                */
-                System.out.println(startDragClickX);
-                System.out.println(startDragClickY);
-                System.out.println(event.getX());
-                System.out.println(event.getY());
-                System.out.println(radius);
-                System.out.println("");
-                
-                System.out.println(getDistance(4, 0, 10, 0));
-                
-                gc.beginPath();
-                //gc.moveTo(startDragClickX+radius, startDragClickY);
-                gc.arc(startDragClickX, startDragClickX, event.getX(), event.getY(), 180, 2*radius);
-                
-
-                gc.stroke();
-                
             } else if (curserMode == "FreeDraw") {              
                 gc.lineTo(event.getX(), event.getY());   
                 gc.closePath();
-                gc.setStroke(colorPicker.getValue());
+                updateEnviormentalVariables();
                 gc.stroke();
+                gc.beginPath();
             }
         }
     });   
@@ -156,10 +113,7 @@ public class CanvasWrapper {
     void resizeCanvas (double width, double height) {
         canvas.resize(width, height);
     }
-    
-    ColorPicker getColorPicker () {
-        return colorPicker;
-    }
+   
     
     Canvas getCanvas() {
         return canvas;
@@ -176,7 +130,7 @@ public class CanvasWrapper {
         width = min (width, height);
         height = min (width, height);    
         
-        gc.setStroke(colorPicker.getValue());
+        updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
     }
     
@@ -193,7 +147,7 @@ public class CanvasWrapper {
         height = min (width, height);
         
         
-        gc.setStroke(colorPicker.getValue());
+        updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
     }
     
@@ -213,11 +167,11 @@ public class CanvasWrapper {
     }
     
     double findWidth (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
-        abs(CornerOneX - CornerTwoX);
+        return abs(CornerOneX - CornerTwoX);
     }
     
     double findHeight (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
-        abs(CornerOneY - CornerTwoY);
+        return abs(CornerOneY - CornerTwoY);
     }
     
     double getMinRetaineNegitive (double X, double Y) {
@@ -231,5 +185,10 @@ public class CanvasWrapper {
     
     double getDistance (double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+    }
+    
+    void updateEnviormentalVariables() {
+        gc.setStroke(FirstHalfProject.colorPickerWrapper.getValue());
+        gc.setLineWidth(FirstHalfProject.comboBoxWrapper.getValue());
     }
 }
