@@ -132,7 +132,7 @@ public class MenuBarWrapper {
         
         drawLine.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.setCurserMode("Line");
+                FirstHalfProject.canvasWrapper.setCurserMode("Line");
             }
         });
         
@@ -140,7 +140,7 @@ public class MenuBarWrapper {
         
         freeDraw.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.setCurserMode("FreeDraw");
+                FirstHalfProject.canvasWrapper.setCurserMode("FreeDraw");
             }
         });
         

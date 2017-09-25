@@ -5,7 +5,7 @@
  */
 package firsthalfproject;
 // Testing Git
-// This is the currrent version
+// This is to verify that I am committing directly to github
 
 import javafx.application.Application;
 import javafx.geometry.Pos;

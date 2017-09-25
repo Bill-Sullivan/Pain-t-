@@ -123,10 +123,7 @@ public class CanvasWrapper {
         double y = topCorner[1];
         
         double width = findWidth(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
-        double height = findHeight(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
-        
-        width = min (width, height);
-        height = min (width, height);    
+        double height = findHeight(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);    
         
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
