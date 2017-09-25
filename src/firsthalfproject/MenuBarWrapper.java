@@ -62,6 +62,7 @@ public class MenuBarWrapper {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));        
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG(*.jpg)", "*.jpg"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP(*.bmp)", "*.bmp"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF(*.gif)", "*.gif"));
         
         
         // this function is called when the open MenuItem is clicked on
@@ -84,11 +85,12 @@ public class MenuBarWrapper {
                 }                     
             }
         });
-                
+
+        
         // creates a new menu item Save to be placed in the file menu
         // when pressed this item saves the image currently in use 
-        MenuItem save = new MenuItem("Save");
-        save.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem saveAs = new MenuItem("Save As");
+        saveAs.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 try {
                     // launches the File Chooser to select a file to save to then stores that file in the file object
@@ -113,7 +115,7 @@ public class MenuBarWrapper {
             }
         });
         
-        menuFile.getItems().addAll(newItem, open, save);
+        menuFile.getItems().addAll(newItem, open, saveAs);
         
         // --- Menu Edit
         Menu menuEdit = new Menu("Edit");

@@ -24,6 +24,7 @@ public class FirstHalfProject extends Application {
     // variable that containes the active image
     public static Image image;
     public static GridPane root;
+   
     
     public static Stage stage;
     
