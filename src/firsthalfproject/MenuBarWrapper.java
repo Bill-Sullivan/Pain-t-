@@ -5,7 +5,7 @@
  */
 package firsthalfproject;
 
-import static firsthalfproject.FirstHalfProject.canvasWrapper;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -73,8 +73,8 @@ public class MenuBarWrapper {
                     
                     // converts the file to an image object for further use
                     FirstHalfProject.image = new Image(new FileInputStream(file));
-                    canvasWrapper.drawImageOnCanvas(FirstHalfProject.image);
-                    FirstHalfProject.root.add(canvasWrapper.getCanvas(), 0, 1);
+                    FirstHalfProject.canvasWrapper.drawImageOnCanvas(FirstHalfProject.image);
+                    FirstHalfProject.root.add(FirstHalfProject.canvasWrapper.getCanvas(), 0, 1);
                     
                     // resizes the window to match the size of the image
                     FirstHalfProject.stage.sizeToScene();    
@@ -99,8 +99,10 @@ public class MenuBarWrapper {
                     // then removes the first two charachters (*.) to get the name of the file type
                     String fileType = new String(fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2));                 
                  
+                    FirstHalfProject.image = FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null);
+                    
                     // writes image to the selected file 
-                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(canvasWrapper.getCanvas().snapshot(null, null), null);
+                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null), null);
                     BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
                     newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null); 
                 
@@ -146,7 +148,7 @@ public class MenuBarWrapper {
         
         drawRect.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.setCurserMode("Rectangle");
+                FirstHalfProject.canvasWrapper.setCurserMode("Rectangle");
             }
         });
         
@@ -154,7 +156,7 @@ public class MenuBarWrapper {
         
         drawCircle.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.setCurserMode("Circle");
+                FirstHalfProject.canvasWrapper.setCurserMode("Circle");
             }
         });
         
@@ -162,7 +164,7 @@ public class MenuBarWrapper {
         
         drawSquare.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.setCurserMode("Square");
+                FirstHalfProject.canvasWrapper.setCurserMode("Square");
             }
         });
         
@@ -171,7 +173,7 @@ public class MenuBarWrapper {
         
         testDraw.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                canvasWrapper.drawTestPath();
+                FirstHalfProject.canvasWrapper.drawTestPath();
             }
         });
         
