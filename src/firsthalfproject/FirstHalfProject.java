@@ -7,37 +7,25 @@ package firsthalfproject;
 // Testing Git
 // This is the currrent version
 
-import java.awt.image.RenderedImage;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.util.Pair;
 import javax.imageio.ImageIO;
 
 
@@ -91,7 +79,9 @@ public class FirstHalfProject extends Application {
         final FileChooser fileChooser = new FileChooser();
         
         // sets the file formates that the File Chooser will show in its window
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));        
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG(*.jpg)", "*.jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP(*.bmp)", "*.bmp"));
         
         
         // this function is called when the open MenuItem is clicked on
@@ -130,11 +120,16 @@ public class FirstHalfProject extends Application {
                  String fileType = new String(fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2));                 
                  
                  // writes image to the selected file 
-                 WritableImage writableImage = new WritableImage((int)canvasWrapper.getCanvas().getWidth(), (int)canvasWrapper.getCanvas().getHeight());
-                 canvasWrapper.getCanvas().snapshot(null, writableImage);
-                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                 //WritableImage writableImage = new WritableImage((int)canvasWrapper.getCanvas().getWidth(), (int)canvasWrapper.getCanvas().getHeight());
+                 //canvasWrapper.getCanvas().snapshot(null, writableImage);
+                 //RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
                  
-                 ImageIO.write(renderedImage, fileType, file);
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+                BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null); 
+                
+                
+                ImageIO.write(newBufferedImage, fileType, file);
                  
                  
                 } catch (IOException e) {
@@ -163,7 +158,49 @@ public class FirstHalfProject extends Application {
                 canvasWrapper.setCurserMode("Line");
             }
         });
-        menuDraw.getItems().addAll(drawLine);
+        
+        MenuItem freeDraw = new MenuItem("Free Draw");
+        
+        freeDraw.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                canvasWrapper.setCurserMode("FreeDraw");
+            }
+        });
+        
+        MenuItem drawRect = new MenuItem("Rectangle");
+        
+        drawRect.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                canvasWrapper.setCurserMode("Rectangle");
+            }
+        });
+        
+        MenuItem drawCircle = new MenuItem("Circle");
+        
+        drawCircle.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                canvasWrapper.setCurserMode("Circle");
+            }
+        });
+        
+        MenuItem drawSquare = new MenuItem("Square");
+        
+        drawSquare.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                canvasWrapper.setCurserMode("Square");
+            }
+        });
+        
+        
+        MenuItem testDraw = new MenuItem("testDraw");
+        
+        testDraw.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                canvasWrapper.drawTestPath();
+            }
+        });
+        
+        menuDraw.getItems().addAll(drawLine, drawRect, drawCircle, drawSquare, freeDraw, testDraw);
         
         // adds the File Edit, and View objects to the menuBar container
         menuBar.getMenus().addAll(menuFile, menuEdit, menuView, menuDraw);
