@@ -78,8 +78,6 @@ public class CanvasWrapper {
             }
         }
     });   
-    
-    
     }
     
     void drawTestPath () {
