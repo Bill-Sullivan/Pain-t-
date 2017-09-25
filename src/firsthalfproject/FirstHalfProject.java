@@ -42,9 +42,6 @@ public class FirstHalfProject extends Application {
         stage = primaryStage;
         // Container that arranges the items contained in it in a grid for display on screen
         // grid is arranged as (column, row)        
-        root = new GridPane();
-        
-        
         
         Scene scene = new Scene(root);
         
