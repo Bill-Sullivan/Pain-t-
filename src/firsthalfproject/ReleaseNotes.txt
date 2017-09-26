@@ -1,3 +1,11 @@
+Version 0.3.0
+added ability to draw a square on an image in an arbitrary color
+added ability to draw a rectangle on an image in an arbitrary color
+added ability to draw a free draw on an image in an arbitrary color
+added ability to change width of lines in all drawings
+added a tool bar
+added the ability to save in multiple formates
+
 Version 0.2.0
 added ability to draw a line on an image in an arbitrary color
 added color picker to select color
