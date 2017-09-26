@@ -52,24 +52,12 @@ public class MenuBarWrapper {
         
         MenuItem open = new MenuItem("Open"); // creates the open menu item to be placed in the file menu
         
-        // provides access to the File Manager's File Chooser in a file manager and os agnostic way
-        // The File Chooser opens a window that allows the user to select a file 
-        // this file is then retured to the program to use as it will
-        final FileChooser fileChooser = new FileChooser();
-        
-        // sets the file formates that the File Chooser will show in its window
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));        
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG(*.jpg)", "*.jpg"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP(*.bmp)", "*.bmp"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF(*.gif)", "*.gif"));
-        
-        
         // this function is called when the open MenuItem is clicked on
         open.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {                
                 try {
                     // launches the File Chooser to open a file then stores that file in the file object
-                    File file = fileChooser.showOpenDialog(FirstHalfProject.stage);
+                    File file = FirstHalfProject.fileChooser.showOpenDialog(FirstHalfProject.stage);
                     
                     // converts the file to an image object for further use
                     FirstHalfProject.image = new Image(new FileInputStream(file));
@@ -85,35 +73,23 @@ public class MenuBarWrapper {
         });
 
         
+        MenuItem save = new MenuItem("Save");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.smartSaveWrapper.smartSave();
+            }
+        });
+        
         // creates a new menu item Save to be placed in the file menu
         // when pressed this item saves the image currently in use 
         MenuItem saveAs = new MenuItem("Save As");
         saveAs.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                try {
-                    // launches the File Chooser to select a file to save to then stores that file in the file object
-                    File file = fileChooser.showSaveDialog(FirstHalfProject.stage); 
-                 
-                    //stores the selected file formate in the variable fileType
-                    //gets the first of the posible extentions
-                    // then removes the first two charachters (*.) to get the name of the file type
-                    String fileType = new String(fileChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2));                 
-                 
-                    FirstHalfProject.image = FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null);
-                    
-                    // writes image to the selected file 
-                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null), null);
-                    BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-                    newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null); 
-                
-                    ImageIO.write(newBufferedImage, fileType, file);
-                } catch (IOException e) {
-                    
-                } 
+                FirstHalfProject.smartSaveWrapper.saveAs();
             }
         });
         
-        menuFile.getItems().addAll(newItem, open, saveAs);
+        menuFile.getItems().addAll(newItem, open, save, saveAs);
         
         // --- Menu Edit
         Menu menuEdit = new Menu("Edit");
