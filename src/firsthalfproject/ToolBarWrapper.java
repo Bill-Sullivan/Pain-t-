@@ -45,8 +45,26 @@ public class ToolBarWrapper {
                 FirstHalfProject.canvasWrapper.setCurserMode("FreeDraw");
             }
         });
+        
+        Button undo = new Button("Undo");
+
+        undo.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.undoWrapper.undo();
+            }
+        });
+        
+        Button redo = new Button("Redo");
+
+        redo.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.undoWrapper.redo();
+            }
+        });
                 
         toolBar = new ToolBar(
+                undo,
+                redo,
                 line,
                 rectangle,
                 square,

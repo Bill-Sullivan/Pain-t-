@@ -23,7 +23,7 @@ public class FirstHalfProject extends Application {
     
     // variable that containes the active image
     public static Image image;
-    public static GridPane root;
+    public static GridPane root = new GridPane();
    
     
     public static Stage stage;
@@ -34,6 +34,7 @@ public class FirstHalfProject extends Application {
     static ColorPickerWrapper colorPickerWrapper = new ColorPickerWrapper();
     static ToolBarWrapper toolBarWrapper = new ToolBarWrapper();
     static MenuBarWrapper menuBarWrapper = new MenuBarWrapper();
+    static UndoWrapper undoWrapper = new UndoWrapper();
     
     @Override
     public void start(Stage primaryStage) {        
@@ -41,22 +42,23 @@ public class FirstHalfProject extends Application {
         
         stage = primaryStage;
         // Container that arranges the items contained in it in a grid for display on screen
-        // grid is arranged as (column, row)        
-        
+        // grid is arranged as (column, row)    
+                
         Scene scene = new Scene(root);
         
         // adds the menu bar to the top of the view 
+        root.add(canvasWrapper.getCanvas(), 0, 3);
+        
         root.add(menuBarWrapper.getMenuBar(), 0, 0);
         
         root.add(comboBoxWrapper.getComboBox(), 2, 0);
         
-        root.add(toolBarWrapper.getToolBar(), 3, 0);
-        
-        // Aligns the grid so that (0, 0) is in the top right
-        root.setAlignment(Pos.TOP_RIGHT);
+        root.add(toolBarWrapper.getToolBar(), 0, 2);
         
         root.add(colorPickerWrapper.getColorPicker(), 1, 0);
         
+        // Aligns the grid so that (0, 0) is in the top right
+        root.setAlignment(Pos.TOP_RIGHT);
         
         primaryStage.setTitle("Image Viewer");
         primaryStage.setScene(scene);        

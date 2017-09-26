@@ -41,8 +41,7 @@ public class MenuBarWrapper {
         MenuItem newItem = new MenuItem("New");
         newItem.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {   
-                FirstHalfProject.image = FirstHalfProject.canvasWrapper.drawBlankCanvas(FirstHalfProject.image);                
-                FirstHalfProject.root.add(FirstHalfProject.canvasWrapper.getCanvas(), 0, 1);
+                FirstHalfProject.canvasWrapper.drawBlankCanvas();
                 FirstHalfProject.image = FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null);
                 
                 // resizes the window to match the size of the image
@@ -74,8 +73,7 @@ public class MenuBarWrapper {
                     
                     // converts the file to an image object for further use
                     FirstHalfProject.image = new Image(new FileInputStream(file));
-                    FirstHalfProject.canvasWrapper.drawImageOnCanvas(FirstHalfProject.image);
-                    FirstHalfProject.root.add(FirstHalfProject.canvasWrapper.getCanvas(), 0, 1);
+                    FirstHalfProject.canvasWrapper.drawImageOnCanvas(FirstHalfProject.image);                    
                     
                     // resizes the window to match the size of the image
                     FirstHalfProject.stage.sizeToScene();    
@@ -119,8 +117,24 @@ public class MenuBarWrapper {
         
         // --- Menu Edit
         Menu menuEdit = new Menu("Edit");
+        
+        MenuItem undo = new MenuItem("Undo");
+
+        undo.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.undoWrapper.undo();
+            }
+        });
+        
+        MenuItem redo = new MenuItem("Redo");
+
+        redo.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.undoWrapper.redo();
+            }
+        });
  
-        menuEdit.getItems().addAll();
+        menuEdit.getItems().addAll(undo, redo);
         
         // --- Menu View
         Menu menuView = new Menu("View"); 

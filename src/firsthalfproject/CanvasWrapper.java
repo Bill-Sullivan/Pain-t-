@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -37,6 +38,7 @@ public class CanvasWrapper {
     }
     
     CanvasWrapper() {
+        //FirstHalfProject.root.add(canvas, 0, 1);
         
        canvas.setOnDragDetected(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -65,6 +67,7 @@ public class CanvasWrapper {
             if (curserMode == "Line") {
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
+                FirstHalfProject.undoWrapper.updateUndoStack();
             } else if (curserMode == "Rectangle") {
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
             } else if (curserMode == "Square") {
@@ -75,6 +78,7 @@ public class CanvasWrapper {
                 updateEnviormentalVariables();
                 gc.stroke();
                 gc.beginPath();
+                FirstHalfProject.undoWrapper.updateUndoStack();
             }
         }
     });   
@@ -87,25 +91,25 @@ public class CanvasWrapper {
         gc.stroke();
     }
     
-    Image drawBlankCanvas(Image toWrite) {
+    void drawBlankCanvas() {
         File blankImage = new File("Empty.png");
         try {
-            Image blank = new Image(new FileInputStream(blankImage));
-            drawImageOnCanvas(blank);
-            return blank;            
+            //FirstHalfProject.image = new Image(new FileInputStream(blankImage));
+            drawImageOnCanvas(new Image(new FileInputStream(blankImage)));          
         } catch (FileNotFoundException e) {
-            return toWrite;
+            
         }
        
     }
     
     void drawImageOnCanvas(Image image) {
         // sets the Image that will be shown in the Viewer 
-                    //imageView.setImage(image);
-                    canvas.setHeight(image.getHeight());
-                    canvas.setWidth(image.getWidth());
+        canvas.setHeight(image.getHeight());
+        canvas.setWidth(image.getWidth());
                     
-                    gc.drawImage(image, 0, 0);
+        gc.drawImage(image, 0, 0);
+        FirstHalfProject.image= canvas.snapshot(null, null);
+        FirstHalfProject.undoWrapper.updateUndoStack();
     }
     
     void resizeCanvas (double width, double height) {
@@ -117,23 +121,23 @@ public class CanvasWrapper {
         return canvas;
     }
     
+    
+    
     void drawRectangle(double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
-        double[] topCorner = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
-        double x = topCorner[0];
-        double y = topCorner[1];
+        double x = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY).getX();
+        double y = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY).getY();
         
         double width = findWidth(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
         double height = findHeight(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);    
         
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
+        FirstHalfProject.undoWrapper.updateUndoStack();
     }
     
-    void drawSquare (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
-        double[] topCorner = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
-        
-        double x = topCorner[0];
-        double y = topCorner[1];
+    void drawSquare (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {                       
+        double x = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY).getX();
+        double y = findTopCorner(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY).getY();
         
         double width = findWidth(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
         double height = findHeight(CornerOneX,  CornerOneY,  CornerTwoX,  CornerTwoY);
@@ -144,11 +148,11 @@ public class CanvasWrapper {
         
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
+        FirstHalfProject.undoWrapper.updateUndoStack();
     }
     
-    double[] findTopCorner (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
-        double width;
-        double height;
+    Point2D findTopCorner (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
+        // finds the top corner of a Rectangle and returns its coordinates
         
         double x;
         double y;
@@ -156,7 +160,7 @@ public class CanvasWrapper {
         x = min(CornerOneX, CornerTwoX);
         y = min(CornerOneY, CornerTwoY);
         
-        double[] toReturn = {x, y};
+        Point2D toReturn = new Point2D(x, y);
         
         return toReturn;
     }
@@ -167,15 +171,6 @@ public class CanvasWrapper {
     
     double findHeight (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
         return abs(CornerOneY - CornerTwoY);
-    }
-    
-    double getMinRetaineNegitive (double X, double Y) {
-        if (abs(X) < abs(Y)) {
-            return X;
-        } else {
-            return Y;
-        }
-        
     }
     
     double getDistance (double x1, double y1, double x2, double y2) {
