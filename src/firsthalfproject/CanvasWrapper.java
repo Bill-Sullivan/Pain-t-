@@ -58,6 +58,7 @@ public class CanvasWrapper {
                 if (curserMode == "FreeDraw") {
                     gc.lineTo(event.getX(), event.getY());
                     gc.moveTo(event.getX(), event.getY());
+                    gc.stroke();
                 }
             }
     });
@@ -68,6 +69,7 @@ public class CanvasWrapper {
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
+                FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "Rectangle") {
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
             } else if (curserMode == "Square") {
@@ -79,6 +81,7 @@ public class CanvasWrapper {
                 gc.stroke();
                 gc.beginPath();
                 FirstHalfProject.undoWrapper.updateUndoStack();
+                FirstHalfProject.smartSaveWrapper.autoSave();
             }
         }
     });   
@@ -121,6 +124,10 @@ public class CanvasWrapper {
         return canvas;
     }
     
+    Image getImageOnCanves() {
+        return canvas.snapshot(null, null);
+    }
+    
     
     
     void drawRectangle(double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
@@ -133,6 +140,7 @@ public class CanvasWrapper {
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
         FirstHalfProject.undoWrapper.updateUndoStack();
+        FirstHalfProject.smartSaveWrapper.autoSave();
     }
     
     void drawSquare (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {                       
@@ -149,6 +157,7 @@ public class CanvasWrapper {
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
         FirstHalfProject.undoWrapper.updateUndoStack();
+        FirstHalfProject.smartSaveWrapper.autoSave();
     }
     
     Point2D findTopCorner (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {

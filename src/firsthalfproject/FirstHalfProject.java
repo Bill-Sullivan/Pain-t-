@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 
 
 /**
@@ -35,9 +36,25 @@ public class FirstHalfProject extends Application {
     static ToolBarWrapper toolBarWrapper = new ToolBarWrapper();
     static MenuBarWrapper menuBarWrapper = new MenuBarWrapper();
     static UndoWrapper undoWrapper = new UndoWrapper();
+    static SmartSave smartSaveWrapper = new SmartSave();
+    
+    
+    
+    // provides access to the File Manager's File Chooser in a file manager and os agnostic way
+    // The File Chooser opens a window that allows the user to select a file 
+    // this file is then retured to the program to use as it will
+    static FileChooser fileChooser = new FileChooser();
     
     @Override
     public void start(Stage primaryStage) {        
+        
+        
+        
+        // sets the file formates that the File Chooser will show in its window
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG(*.png)", "*.png"));        
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG(*.jpg)", "*.jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP(*.bmp)", "*.bmp"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF(*.gif)", "*.gif"));
         
         
         stage = primaryStage;
