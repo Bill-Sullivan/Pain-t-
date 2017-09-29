@@ -6,21 +6,15 @@
 package firsthalfproject;
 
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.stage.FileChooser;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -165,7 +159,15 @@ public class MenuBarWrapper {
         
         testDraw.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                FirstHalfProject.canvasWrapper.drawTestPath();
+                BetterStack betterStack = new BetterStack();
+                
+                betterStack.push(FirstHalfProject.image);
+                
+                
+                System.out.println(betterStack.pop());
+                System.out.println(betterStack.pop());
+                
+                //FirstHalfProject.canvasWrapper.drawTestPath();
             }
         });
         

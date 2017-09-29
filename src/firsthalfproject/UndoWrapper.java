@@ -5,7 +5,7 @@
  */
 package firsthalfproject;
 
-import java.util.Stack;
+import java.util.LinkedList;
 import javafx.scene.image.Image;
 
 /**
@@ -13,8 +13,8 @@ import javafx.scene.image.Image;
  * @author Bill
  */
 public class UndoWrapper {
-    Stack<Image> pastStates = new Stack();
-    Stack<Image> furtureStates = new Stack();
+    LinkedList<Image> pastStates = new LinkedList();
+    LinkedList<Image> furtureStates = new LinkedList();
     
     void updateUndoStack() {
         pastStates.push(FirstHalfProject.canvasWrapper.getCanvas().snapshot(null, null));
