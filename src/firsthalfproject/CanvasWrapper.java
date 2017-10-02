@@ -69,11 +69,14 @@ public class CanvasWrapper {
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
+                FirstHalfProject.undoWrapper.clearRedoStack();
+                //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "Rectangle") {
-                drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
+                drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());                
+                //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "Square") {
                 drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
+                //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "FreeDraw") {              
                 gc.lineTo(event.getX(), event.getY());   
                 gc.closePath();
@@ -81,7 +84,8 @@ public class CanvasWrapper {
                 gc.stroke();
                 gc.beginPath();
                 FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
+                FirstHalfProject.undoWrapper.clearRedoStack();
+                //FirstHalfProject.smartSaveWrapper.autoSave();
             }
         }
     });   
@@ -109,10 +113,10 @@ public class CanvasWrapper {
         // sets the Image that will be shown in the Viewer 
         canvas.setHeight(image.getHeight());
         canvas.setWidth(image.getWidth());
-                    
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.drawImage(image, 0, 0);
         FirstHalfProject.image= canvas.snapshot(null, null);
-        FirstHalfProject.undoWrapper.updateUndoStack();
+        //FirstHalfProject.undoWrapper.updateUndoStack();
     }
     
     void resizeCanvas (double width, double height) {
@@ -140,7 +144,9 @@ public class CanvasWrapper {
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
         FirstHalfProject.undoWrapper.updateUndoStack();
+        FirstHalfProject.undoWrapper.clearRedoStack();
         FirstHalfProject.smartSaveWrapper.autoSave();
+        
     }
     
     void drawSquare (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {                       
@@ -157,6 +163,7 @@ public class CanvasWrapper {
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
         FirstHalfProject.undoWrapper.updateUndoStack();
+        FirstHalfProject.undoWrapper.clearRedoStack();
         FirstHalfProject.smartSaveWrapper.autoSave();
     }
     

@@ -53,6 +53,8 @@ public class MenuBarWrapper {
                     // launches the File Chooser to open a file then stores that file in the file object
                     File file = FirstHalfProject.fileChooser.showOpenDialog(FirstHalfProject.stage);
                     
+                    FirstHalfProject.undoWrapper.baseImage = new Image(new FileInputStream(file));
+                    
                     // converts the file to an image object for further use
                     FirstHalfProject.image = new Image(new FileInputStream(file));
                     FirstHalfProject.canvasWrapper.drawImageOnCanvas(FirstHalfProject.image);                    
@@ -164,8 +166,9 @@ public class MenuBarWrapper {
                 betterStack.push(FirstHalfProject.image);
                 
                 
-                System.out.println(betterStack.pop());
-                System.out.println(betterStack.pop());
+                //System.out.println(betterStack.pop());
+                //System.out.println(betterStack.pop());
+                System.out.println(FirstHalfProject.undoWrapper.pastStates.size());
                 
                 //FirstHalfProject.canvasWrapper.drawTestPath();
             }
