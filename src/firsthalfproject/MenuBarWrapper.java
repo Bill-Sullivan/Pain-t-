@@ -104,7 +104,8 @@ public class MenuBarWrapper {
             public void handle(ActionEvent t) {
                 FirstHalfProject.undoWrapper.redo();
             }
-        });
+        });      
+      
  
         menuEdit.getItems().addAll(undo, redo);
         
@@ -174,7 +175,14 @@ public class MenuBarWrapper {
             }
         });
         
-        menuDraw.getItems().addAll(drawLine, drawRect, drawCircle, drawSquare, freeDraw, testDraw);
+        MenuItem drag = new MenuItem("drag");
+        drag.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FirstHalfProject.canvasWrapper.setCurserMode("drag");
+            }
+        });
+        
+        menuDraw.getItems().addAll(drawLine, drawRect, drawCircle, drawSquare, freeDraw, drag, testDraw);
         
         // adds the File Edit, and View objects to the menuBar container
         menuBar.getMenus().addAll(menuFile, menuEdit, menuView, menuDraw);

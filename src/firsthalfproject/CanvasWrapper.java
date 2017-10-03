@@ -8,14 +8,18 @@ package firsthalfproject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
 
 
 /**
@@ -27,6 +31,8 @@ public class CanvasWrapper {
     final Canvas canvas = new Canvas();
     GraphicsContext gc = canvas.getGraphicsContext2D();
     
+    
+    
     private String curserMode = new String ("Default");
     
     
@@ -37,19 +43,34 @@ public class CanvasWrapper {
         curserMode = mode;
     }
     
+    Image dragImage;
+    double dragWidth;
+    double dragHeight;
+    Point2D dragTopCorner;
+    
+    
     CanvasWrapper() {
         //FirstHalfProject.root.add(canvas, 0, 1);
-        
-       canvas.setOnDragDetected(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Square") {
+       
+       canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+           public void handle(MouseEvent event) {  
+               if (curserMode == "drop") {                  
+                    gc.drawImage(dragImage, event.getX(), event.getY(), dragWidth, dragHeight);
+                    setCurserMode("default");
+                }
+           }
+       });
+       canvas.setOnDragDetected(new EventHandler<MouseEvent>() {            
+            public void handle(MouseEvent event) {  
+                System.out.println(curserMode);
+                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Square" || curserMode == "drag") {                    
                     startDragClickX = event.getX();
                     startDragClickY = event.getY();
                 } 
                 if (curserMode == ("FreeDraw")) {
-                        gc.beginPath();
-                        gc.moveTo(event.getX(), event.getY());   
-                }
+                    gc.beginPath();
+                    gc.moveTo(event.getX(), event.getY());   
+                }              
                 
             }
         });
@@ -66,16 +87,24 @@ public class CanvasWrapper {
     canvas.setOnMouseReleased(new EventHandler<MouseEvent>() {    
         public void handle(MouseEvent event) {
             if (curserMode == "Line") {
+                //drawImageOnCanvas(beforeDraw);
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
-                //FirstHalfProject.smartSaveWrapper.autoSave();
+                FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "Rectangle") {
-                drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());                
+                drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
+                FirstHalfProject.undoWrapper.updateUndoStack();
+                FirstHalfProject.undoWrapper.clearRedoStack();
+                FirstHalfProject.smartSaveWrapper.autoSave();
                 //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "Square") {
                 drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
+                FirstHalfProject.undoWrapper.updateUndoStack();
+                FirstHalfProject.undoWrapper.clearRedoStack();
+                FirstHalfProject.smartSaveWrapper.autoSave();
+        
                 //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "FreeDraw") {              
                 gc.lineTo(event.getX(), event.getY());   
@@ -85,7 +114,17 @@ public class CanvasWrapper {
                 gc.beginPath();
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
-                //FirstHalfProject.smartSaveWrapper.autoSave();
+                FirstHalfProject.smartSaveWrapper.autoSave();
+            } else if (curserMode == "drag") { 
+                dragTopCorner = findTopCorner(startDragClickX, startDragClickY, event.getX(), event.getY());
+                dragWidth= findWidth(startDragClickX, startDragClickY, event.getX(), event.getY());
+                dragHeight = findHeight(startDragClickX, startDragClickY, event.getX(), event.getY());        
+                dragImage = getImageOnCanvas(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                
+                gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                
+                
+                setCurserMode("drop");
             }
         }
     });   
@@ -128,8 +167,16 @@ public class CanvasWrapper {
         return canvas;
     }
     
-    Image getImageOnCanves() {
+    Image getImageOnCanvas() {
         return canvas.snapshot(null, null);
+    }
+    
+    Image getImageOnCanvas(double topCornerX, double topCornerY, double width,double height) {
+        Image oldImage = getImageOnCanvas();
+        PixelReader reader = oldImage.getPixelReader();
+        WritableImage newImage = new WritableImage(reader, (int)topCornerX, (int)topCornerY, (int)width, (int)height);
+        return newImage;
+        
     }
     
     
@@ -143,9 +190,6 @@ public class CanvasWrapper {
         
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
-        FirstHalfProject.undoWrapper.updateUndoStack();
-        FirstHalfProject.undoWrapper.clearRedoStack();
-        FirstHalfProject.smartSaveWrapper.autoSave();
         
     }
     
@@ -162,9 +206,7 @@ public class CanvasWrapper {
         
         updateEnviormentalVariables();
         gc.strokeRect(x, y, width, height);
-        FirstHalfProject.undoWrapper.updateUndoStack();
-        FirstHalfProject.undoWrapper.clearRedoStack();
-        FirstHalfProject.smartSaveWrapper.autoSave();
+        
     }
     
     Point2D findTopCorner (double CornerOneX, double CornerOneY, double CornerTwoX, double CornerTwoY) {
