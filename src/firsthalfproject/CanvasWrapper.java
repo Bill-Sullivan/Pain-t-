@@ -48,10 +48,15 @@ public class CanvasWrapper {
     double dragHeight;
     Point2D dragTopCorner;
     
+    Boolean dragStarted = false;
+    
+    double xDistanceBetweenMouseAndCorner;
+    double yDistanceBetweenMouseAndCorner;
+    
     
     CanvasWrapper() {
         //FirstHalfProject.root.add(canvas, 0, 1);
-       
+       /*
        canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
            public void handle(MouseEvent event) {  
                if (curserMode == "drop") {                  
@@ -59,51 +64,95 @@ public class CanvasWrapper {
                     setCurserMode("default");
                 }
            }
-       });
+       }); */
        canvas.setOnDragDetected(new EventHandler<MouseEvent>() {            
             public void handle(MouseEvent event) {  
                 System.out.println(curserMode);
-                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Square" || curserMode == "drag") {                    
+                if (curserMode == "Line" || curserMode == "Rectangle" || curserMode == "Square" || curserMode == "drag") {
+                    System.out.println("Drag Detected");
+                    FirstHalfProject.undoWrapper.updateUndoStack();
                     startDragClickX = event.getX();
                     startDragClickY = event.getY();
+                    dragStarted = true;
+                    
                 } 
                 if (curserMode == ("FreeDraw")) {
                     gc.beginPath();
                     gc.moveTo(event.getX(), event.getY());   
-                }              
+                    dragStarted = true;
+                }
+                if (curserMode == "drop") {                  
+                    xDistanceBetweenMouseAndCorner = event.getX() - dragTopCorner.getX();
+                    yDistanceBetweenMouseAndCorner = event.getY() - dragTopCorner.getY();
+                    gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                    FirstHalfProject.undoWrapper.updateUndoStack();
+                    dragStarted = true;
+                }
                 
             }
         });
-    canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+    canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {        
             public void handle(MouseEvent event) {
-                if (curserMode == "FreeDraw") {
-                    gc.lineTo(event.getX(), event.getY());
-                    gc.moveTo(event.getX(), event.getY());
-                    gc.stroke();
+                if (dragStarted == true) {
+                    if (curserMode == "Line") {
+                        FirstHalfProject.undoWrapper.undo();
+                        updateEnviormentalVariables();                    
+                        gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
+                        FirstHalfProject.undoWrapper.updateUndoStack();
+                    }
+                    if (curserMode == "Rectangle") { 
+                        FirstHalfProject.undoWrapper.undo();
+                        updateEnviormentalVariables();                    
+                        drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
+                        FirstHalfProject.undoWrapper.updateUndoStack();
+                    }
+                    if (curserMode == "Square") { 
+                        FirstHalfProject.undoWrapper.undo();
+                        updateEnviormentalVariables();                    
+                        drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
+                        FirstHalfProject.undoWrapper.updateUndoStack();
+                    }
+                    if (curserMode == "FreeDraw") {
+                        gc.lineTo(event.getX(), event.getY());
+                        gc.moveTo(event.getX(), event.getY());
+                        updateEnviormentalVariables();
+                        gc.stroke();
+                    }
+                    if (curserMode == "drop") {                  
+                        FirstHalfProject.undoWrapper.undo();
+                        gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                        gc.drawImage(dragImage, event.getX()-xDistanceBetweenMouseAndCorner, event.getY()-yDistanceBetweenMouseAndCorner, dragWidth, dragHeight);   
+                        FirstHalfProject.undoWrapper.updateUndoStack();
+                    }
                 }
             }
     });
         
     canvas.setOnMouseReleased(new EventHandler<MouseEvent>() {    
         public void handle(MouseEvent event) {
-            if (curserMode == "Line") {
-                //drawImageOnCanvas(beforeDraw);
+            if (curserMode == "Line") {                
+                FirstHalfProject.undoWrapper.undo();
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
                 FirstHalfProject.smartSaveWrapper.autoSave();
+                dragStarted = false;
             } else if (curserMode == "Rectangle") {
+                FirstHalfProject.undoWrapper.undo();
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
                 FirstHalfProject.smartSaveWrapper.autoSave();
                 //FirstHalfProject.smartSaveWrapper.autoSave();
+                dragStarted = false;
             } else if (curserMode == "Square") {
+                FirstHalfProject.undoWrapper.undo();
                 drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
                 FirstHalfProject.smartSaveWrapper.autoSave();
+                dragStarted = false;
         
                 //FirstHalfProject.smartSaveWrapper.autoSave();
             } else if (curserMode == "FreeDraw") {              
@@ -115,16 +164,26 @@ public class CanvasWrapper {
                 FirstHalfProject.undoWrapper.updateUndoStack();
                 FirstHalfProject.undoWrapper.clearRedoStack();
                 FirstHalfProject.smartSaveWrapper.autoSave();
+                dragStarted = false;
             } else if (curserMode == "drag") { 
                 dragTopCorner = findTopCorner(startDragClickX, startDragClickY, event.getX(), event.getY());
                 dragWidth= findWidth(startDragClickX, startDragClickY, event.getX(), event.getY());
                 dragHeight = findHeight(startDragClickX, startDragClickY, event.getX(), event.getY());        
                 dragImage = getImageOnCanvas(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
                 
-                gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
-                
-                
+                //gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                dragStarted = false;
+                                
                 setCurserMode("drop");
+            } else if (curserMode == "drop") {                  
+                FirstHalfProject.undoWrapper.undo();
+                gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                gc.drawImage(dragImage, event.getX()-xDistanceBetweenMouseAndCorner, event.getY()-yDistanceBetweenMouseAndCorner, dragWidth, dragHeight);
+                setCurserMode("default");
+                FirstHalfProject.undoWrapper.updateUndoStack();
+                FirstHalfProject.undoWrapper.clearRedoStack();
+                FirstHalfProject.smartSaveWrapper.autoSave();                
+                dragStarted = false;
             }
         }
     });   
