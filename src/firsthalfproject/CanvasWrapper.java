@@ -81,7 +81,8 @@ public class CanvasWrapper {
                     gc.moveTo(event.getX(), event.getY());   
                     dragStarted = true;
                 }
-                if (curserMode == "drop") {                  
+                if (curserMode == "drop") {
+                    FirstHalfProject.undoWrapper.undo();
                     xDistanceBetweenMouseAndCorner = event.getX() - dragTopCorner.getX();
                     yDistanceBetweenMouseAndCorner = event.getY() - dragTopCorner.getY();
                     gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
@@ -100,7 +101,7 @@ public class CanvasWrapper {
                         gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
                         FirstHalfProject.undoWrapper.updateUndoStack();
                     }
-                    if (curserMode == "Rectangle") { 
+                    if (curserMode == "Rectangle" || curserMode == "drag") { 
                         FirstHalfProject.undoWrapper.undo();
                         updateEnviormentalVariables();                    
                         drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
@@ -123,7 +124,7 @@ public class CanvasWrapper {
                         gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
                         gc.drawImage(dragImage, event.getX()-xDistanceBetweenMouseAndCorner, event.getY()-yDistanceBetweenMouseAndCorner, dragWidth, dragHeight);   
                         FirstHalfProject.undoWrapper.updateUndoStack();
-                    }
+                    } 
                 }
             }
     });
@@ -166,11 +167,14 @@ public class CanvasWrapper {
                 FirstHalfProject.smartSaveWrapper.autoSave();
                 dragStarted = false;
             } else if (curserMode == "drag") { 
+                FirstHalfProject.undoWrapper.undo();
                 dragTopCorner = findTopCorner(startDragClickX, startDragClickY, event.getX(), event.getY());
                 dragWidth= findWidth(startDragClickX, startDragClickY, event.getX(), event.getY());
                 dragHeight = findHeight(startDragClickX, startDragClickY, event.getX(), event.getY());        
                 dragImage = getImageOnCanvas(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
-                
+
+                drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
+                 FirstHalfProject.undoWrapper.updateUndoStack();
                 //gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
                 dragStarted = false;
                                 
