@@ -135,24 +135,18 @@ public class CanvasWrapper {
                 FirstHalfProject.undoWrapper.undo();
                 updateEnviormentalVariables();
                 gc.strokeLine(startDragClickX, startDragClickY, event.getX(), event.getY());
-                FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.undoWrapper.clearRedoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
+                
                 dragStarted = false;
             } else if (curserMode == "Rectangle") {
                 FirstHalfProject.undoWrapper.undo();
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
-                FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.undoWrapper.clearRedoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
-                //FirstHalfProject.smartSaveWrapper.autoSave();
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
                 dragStarted = false;
             } else if (curserMode == "Square") {
                 FirstHalfProject.undoWrapper.undo();
                 drawSquare(startDragClickX, startDragClickY, event.getX(), event.getY());
-                FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.undoWrapper.clearRedoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
                 dragStarted = false;
         
                 //FirstHalfProject.smartSaveWrapper.autoSave();
@@ -162,9 +156,7 @@ public class CanvasWrapper {
                 updateEnviormentalVariables();
                 gc.stroke();
                 gc.beginPath();
-                FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.undoWrapper.clearRedoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
                 dragStarted = false;
             } else if (curserMode == "drag") { 
                 FirstHalfProject.undoWrapper.undo();
@@ -174,8 +166,7 @@ public class CanvasWrapper {
                 dragImage = getImageOnCanvas(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
 
                 drawRectangle(startDragClickX, startDragClickY, event.getX(), event.getY());
-                 FirstHalfProject.undoWrapper.updateUndoStack();
-                //gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
+                FirstHalfProject.undoWrapper.updateUndoStack();
                 dragStarted = false;
                                 
                 setCurserMode("drop");
@@ -184,13 +175,17 @@ public class CanvasWrapper {
                 gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
                 gc.drawImage(dragImage, event.getX()-xDistanceBetweenMouseAndCorner, event.getY()-yDistanceBetweenMouseAndCorner, dragWidth, dragHeight);
                 setCurserMode("default");
-                FirstHalfProject.undoWrapper.updateUndoStack();
-                FirstHalfProject.undoWrapper.clearRedoStack();
-                FirstHalfProject.smartSaveWrapper.autoSave();                
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();                
                 dragStarted = false;
             }
         }
     });   
+    }
+    
+    void doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas() {
+        FirstHalfProject.undoWrapper.updateUndoStack();
+        FirstHalfProject.undoWrapper.clearRedoStack();
+        FirstHalfProject.smartSaveWrapper.autoSave();
     }
     
     void drawTestPath () {

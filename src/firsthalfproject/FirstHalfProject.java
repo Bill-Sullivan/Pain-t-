@@ -6,7 +6,7 @@
 package firsthalfproject;
 // Testing Git
 // This is to verify that I am committing directly to github
-//current time 13:10
+//current time 15:10
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
