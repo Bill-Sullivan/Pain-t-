@@ -23,4 +23,8 @@ public class ColorPickerWrapper {
     Color getValue() {
         return colorPicker.getValue();
     }
+    
+    void setValue(Color toSet) {
+        colorPicker.setValue(toSet);
+    }
 }

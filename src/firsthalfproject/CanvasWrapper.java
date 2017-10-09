@@ -14,12 +14,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import java.util.Optional;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -56,15 +57,20 @@ public class CanvasWrapper {
     
     CanvasWrapper() {
         //FirstHalfProject.root.add(canvas, 0, 1);
-       /*
+       
        canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
            public void handle(MouseEvent event) {  
-               if (curserMode == "drop") {                  
-                    gc.drawImage(dragImage, event.getX(), event.getY(), dragWidth, dragHeight);
-                    setCurserMode("default");
+               if (curserMode == "Text") {                  
+                    Point2D clickLocation = new Point2D(event.getX(), event.getY());
+                    TextInputDialog dialog = new TextInputDialog("");
+                    Optional<String> toWrite = dialog.showAndWait();
+                    gc.strokeText(toWrite.get(), clickLocation.getX(), clickLocation.getY());
                 }
+               if (curserMode == "Dropper") {
+                   FirstHalfProject.colorPickerWrapper.setValue(getImageOnCanvas().getPixelReader().getColor((int)event.getX(), (int)event.getY()));
+               }
            }
-       }); */
+       }); 
        canvas.setOnDragDetected(new EventHandler<MouseEvent>() {            
             public void handle(MouseEvent event) {  
                 System.out.println(curserMode);
@@ -76,11 +82,11 @@ public class CanvasWrapper {
                     dragStarted = true;
                     
                 } 
-                if (curserMode == ("FreeDraw")) {
+                if (curserMode == "FreeDraw" || curserMode == "Erase") {
                     gc.beginPath();
                     gc.moveTo(event.getX(), event.getY());   
                     dragStarted = true;
-                }
+                }                 
                 if (curserMode == "drop") {
                     FirstHalfProject.undoWrapper.undo();
                     xDistanceBetweenMouseAndCorner = event.getX() - dragTopCorner.getX();
@@ -119,6 +125,14 @@ public class CanvasWrapper {
                         updateEnviormentalVariables();
                         gc.stroke();
                     }
+                    if (curserMode == "Erase") {
+                        gc.lineTo(event.getX(), event.getY());
+                        gc.moveTo(event.getX(), event.getY());
+                        gc.setStroke(Color.WHITE);
+                        gc.setLineWidth(FirstHalfProject.comboBoxWrapper.getValue());
+                        gc.stroke();
+                    } 
+                    
                     if (curserMode == "drop") {                  
                         FirstHalfProject.undoWrapper.undo();
                         gc.clearRect(dragTopCorner.getX(), dragTopCorner.getY(), dragWidth, dragHeight);
@@ -158,6 +172,16 @@ public class CanvasWrapper {
                 gc.beginPath();
                 doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
                 dragStarted = false;
+            } else if (curserMode == "Erase") {              
+                gc.lineTo(event.getX(), event.getY());   
+                gc.closePath();
+                gc.setStroke(Color.WHITE);
+                gc.setLineWidth(FirstHalfProject.comboBoxWrapper.getValue());
+                gc.stroke();
+                gc.beginPath();
+                doTheThingsThatShouldBeDoneAfterDrawingOnTheCanvas();
+                dragStarted = false;
+                
             } else if (curserMode == "drag") { 
                 FirstHalfProject.undoWrapper.undo();
                 dragTopCorner = findTopCorner(startDragClickX, startDragClickY, event.getX(), event.getY());
