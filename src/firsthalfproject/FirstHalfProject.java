@@ -8,13 +8,20 @@ package firsthalfproject;
 // This is to verify that I am committing directly to github
 //current time 3:19
 
+
 import javafx.application.Application;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ColorPicker;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+
 import javafx.stage.FileChooser;
+
 
 
 /**
@@ -78,6 +85,7 @@ public class FirstHalfProject extends Application {
         // Aligns the grid so that (0, 0) is in the top right
         root.setAlignment(Pos.TOP_RIGHT);
         
+
         primaryStage.setTitle("Image Viewer");
         primaryStage.setScene(scene);        
         primaryStage.show();
@@ -91,41 +99,3 @@ public class FirstHalfProject extends Application {
     }
     
 }
-
-
-/*
-        // remove from Rososcos Version
-        MenuItem resizeCanvas = new MenuItem("Resize Canvas");
-        resizeCanvas.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                Dialog<Pair<String, String>> dialog = new Dialog<>();
-                
-                ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
-                dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-                
-                TextField from = new TextField();
-                from.setPromptText("From");
-                TextField to = new TextField();
-                to.setPromptText("To");
-                
-                GridPane gridPane = new GridPane();
-                
-                gridPane.add(from, 0, 0);
-                gridPane.add(new Label("To:"), 1, 0);
-                gridPane.add(to, 2, 0);
-
-                dialog.getDialogPane().setContent(gridPane);
-                
-                Optional<Pair<String, String>> data = dialog.showAndWait();
-                
-                data.ifPresent(pair -> {  
-                    System.out.println("From=" + pair.getKey() + ", To=" + pair.getValue());                    
-                    canvasWrapper.resizeCanvas(Double.parseDouble(pair.getKey()), Double.parseDouble(pair.getValue()));
-                });
-                
-                primaryStage.sizeToScene();
-                
-            }
-        });
-        // remove from Rososcos Version
-        */
